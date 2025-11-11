@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Flight Tracker</title>
+<link href="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css" rel="stylesheet">
+<style>
+    body, html { margin:0; padding:0; font-family: Arial, sans-serif; }
+    #sidebar { width: 250px; height: 100vh; background: #111; color: #fff; float:left; display:flex; flex-direction:column; }
+    #sidebar button { padding:15px; border:none; background:none; color:#fff; cursor:pointer; text-align:left; }
+    #sidebar button:hover { background:#333; }
+    #map { position:absolute; left:250px; top:0; right:0; bottom:0; }
+    #formContainer { display:none; padding:20px; background:#f4f4f4; position:absolute; top:0; left:250px; width:calc(100% - 250px); height:100vh; overflow:auto; }
+    input, select { padding:8px; margin:5px 0; width:100%; }
+</style>
+</head>
+<body>
+
+<div id="sidebar">
+    <button onclick="showSection('home')">Home</button>
+    <button onclick="showSection('newFlight')">New Flight</button>
+    <button onclick="showSection('traffic')">ADS-B Traffic</button>
+    <button onclick="login()">Login</button>
+</div>
+
+<div id="map"></div>
+
+<div id="formContainer">
+    <h2>New Flight</h2>
+    <form id="flightForm">
+        <label>Departure Airport</label>
+        <input type="text" id="departure" required>
+        <label>Arrival Airport</label>
+        <input type="text" id="arrival" required>
+        <label>Flight Number</label>
+        <input type="text" id="flightNumber" required>
+        <label>Aircraft</label>
+        <input type="text" id="aircraft">
+        <label>Airlines</label>
+        <input type="text" id="airlines">
+        <label>Upload Flight JS</label>
+        <input type="file" id="flightFile" accept=".js">
+        <button type="submit">Add Flight</button>
+    </form>
+</div>
+
+<script src="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js"></script>
+<script>
+mapboxgl.accessToken = 'YOUR_MAPBOX_TOKEN'; // Thay bằng token của bạn
+
+const map = new mapboxgl.Map({
+    container: 'map',
+    style: 'mapbox://styles/mapbox/dark-v11',
+    center: [134.5, -25], 
+    zoom: 3
+});
+
+// Sidebar navigation
+function showSection(section) {
+    if(section === 'newFlight') {
+        document.getElementById('formContainer').style.display = 'block';
+    } else {
+        document.getElementById('formContainer').style.display = 'none';
+    }
+}
+
+// Simple login (demo)
+function login() {
+    const user = prompt("Enter username:");
+    if(user) {
+        localStorage.setItem('user', user);
+        alert("Logged in as " + user);
+    }
+}
+
+// Handle new flight form
+document.getElementById('flightForm').addEventListener('submit', async function(e){
+    e.preventDefault();
+    const dep = document.getElementById('departure').value;
+    const arr = document.getElementById('arrival').value;
+    const flightNum = document.getElementById('flightNumber').value;
+    const aircraft = document.getElementById('aircraft').value;
+    const airlines = document.getElementById('airlines').value;
+    const file = document.getElementById('flightFile').files[0];
+
+    if(file) {
+        const content = await file.text();
+        // eval(content) nếu file JS chứa flight route data (cẩn thận!)
+        console.log('Flight JS content:', content);
+    }
+
+    // Demo hiển thị route đơn giản
+    const depCoord = [151.2, -33.9]; // Sydney (demo)
+    const arrCoord = [103.99, 1.36]; // Singapore (demo)
+
+    const route = {
+        "type": "Feature",
+        "geometry": {
+            "type": "LineString",
+            "coordinates": [depCoord, arrCoord]
+        }
+    };
+
+    if(map.getSource('route')) map.getSource('route').setData(route);
+    else {
+        map.addSource('route', { "type": "geojson", "data": route });
+        map.addLayer({
+            "id": "route",
+            "type": "line",
+            "source": "route",
+            "layout": { "line-join": "round", "line-cap": "round" },
+            "paint": { "line-color": "#FF4136", "line-width": 4 }
+        });
+    }
+
+    alert('Flight added: ' + flightNum);
+});
+</script>
+
+</body>
+</html>
+
+}
