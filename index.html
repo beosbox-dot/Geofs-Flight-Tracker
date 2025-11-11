@@ -191,7 +191,11 @@ function googleLogin() {
 }
 
 // Leaflet Map
-const map = L.map('map').setView([10, 105], 3);
+const map = L.map('map', {
+    minZoom: 2,
+    maxZoom: 15
+}).setView([10, 105], 5);
+
 L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
     attribution: '&copy; OpenStreetMap, CARTO',
     subdomains: 'abcd',
@@ -236,10 +240,13 @@ document.getElementById('flightForm').addEventListener('submit', async e=>{
         <b>Airline:</b> ${flightPlan.airline || 'N/A'}
     `);
 
-    map.fitBounds(flightLayer.getBounds());
+    // Fit bounds with padding and max zoom to prevent over-zoom
+    map.fitBounds(flightLayer.getBounds(), { padding: [50, 50], maxZoom: 7 });
+
     alert(`Flight plan loaded: ${flightPlan.flightNumber || 'Unknown'}`);
 });
 </script>
 
 </body>
 </html>
+
