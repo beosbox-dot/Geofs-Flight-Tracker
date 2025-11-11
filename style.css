@@ -1,0 +1,133 @@
+<style>
+/* Reset cơ bản */
+body, html {
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Sidebar */
+#sidebar {
+    width: 260px;
+    height: 100vh;
+    background: linear-gradient(180deg, #0d0d0d, #1a1a1a);
+    color: #fff;
+    float: left;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 2px 0 8px rgba(0,0,0,0.5);
+    transition: width 0.3s;
+}
+
+#sidebar button {
+    padding: 18px 20px;
+    border: none;
+    background: none;
+    color: #fff;
+    cursor: pointer;
+    text-align: left;
+    font-size: 16px;
+    transition: all 0.2s;
+    border-left: 5px solid transparent;
+}
+
+#sidebar button:hover {
+    background: #222;
+    border-left: 5px solid #FF4136;
+}
+
+/* Map */
+#map {
+    position: absolute;
+    left: 260px;
+    top: 0;
+    right: 0;
+    bottom: 0;
+}
+
+/* Form container */
+#formContainer {
+    display: none;
+    padding: 30px;
+    background: #f9f9f9;
+    position: absolute;
+    top: 0;
+    left: 260px;
+    width: calc(100% - 260px);
+    height: 100vh;
+    overflow-y: auto;
+    box-shadow: inset 0 0 10px rgba(0,0,0,0.1);
+}
+
+/* Form */
+#flightForm {
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+#flightForm h2 {
+    margin-bottom: 20px;
+    color: #333;
+    text-align: center;
+}
+
+#flightForm label {
+    font-weight: bold;
+    margin-top: 10px;
+    display: block;
+    color: #555;
+}
+
+#flightForm input, #flightForm select {
+    padding: 10px;
+    margin-top: 5px;
+    margin-bottom: 15px;
+    width: 100%;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 14px;
+    transition: all 0.2s;
+}
+
+#flightForm input:focus, #flightForm select:focus {
+    border-color: #FF4136;
+    outline: none;
+}
+
+/* Submit button */
+#flightForm button {
+    background: #FF4136;
+    color: #fff;
+    padding: 12px;
+    border: none;
+    border-radius: 6px;
+    width: 100%;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+#flightForm button:hover {
+    background: #e33b2d;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+/* Scrollbar đẹp */
+#formContainer::-webkit-scrollbar {
+    width: 8px;
+}
+
+#formContainer::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+#formContainer::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 4px;
+}
+
+#formContainer::-webkit-scrollbar-thumb:hover {
+    background: #999;
+}
+</style>
