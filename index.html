@@ -3,12 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AeroPulse</title>
+<title>AeroPulse - Flight Plan Viewer</title>
 
 <!-- Leaflet CSS -->
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 
-<!-- Custom CSS -->
 <style>
 :root {
     --accent: #2ca1ff;
@@ -75,9 +74,9 @@ body, html { margin:0; padding:0; font-family: 'Segoe UI', sans-serif; backgroun
 #flightForm input { width: 100%; padding: 10px; border: 1px solid #333; border-radius: 4px; background: #121417; color: var(--text-light); margin-top: 4px; font-size: 14px; }
 #flightForm button { background: var(--accent); color: #fff; padding: 12px; border: none; border-radius: 4px; width: 100%; margin-top: 16px; font-size: 15px; cursor: pointer; transition: background 0.2s; }
 #flightForm button:hover { background: #1082e0; }
+
 </style>
 </head>
-
 <body>
 
 <!-- Sidebar -->
@@ -93,23 +92,13 @@ body, html { margin:0; padding:0; font-family: 'Segoe UI', sans-serif; backgroun
 <!-- Map -->
 <div id="map"></div>
 
-<!-- New Flight Form -->
+<!-- Flight Plan Form -->
 <div id="formContainer">
     <form id="flightForm">
-        <h2>New Flight</h2>
-        <label>Departure Airport</label>
-        <input type="text" id="departure" required>
-        <label>Arrival Airport</label>
-        <input type="text" id="arrival" required>
-        <label>Flight Number</label>
-        <input type="text" id="flightNumber" required>
-        <label>Aircraft</label>
-        <input type="text" id="aircraft">
-        <label>Airline</label>
-        <input type="text" id="airlines">
-        <label>Upload Flight .js</label>
-        <input type="file" id="flightFile" accept=".js">
-        <button type="submit">Add Flight</button>
+        <h2>Upload Flight Plan (.json)</h2>
+        <label>Flight Plan JSON</label>
+        <input type="file" id="flightFile" accept=".json" required>
+        <button type="submit">Load Flight</button>
     </form>
 </div>
 
@@ -121,7 +110,7 @@ body, html { margin:0; padding:0; font-family: 'Segoe UI', sans-serif; backgroun
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
 
 <script>
-// ===== Firebase Setup =====
+// Firebase setup
 const firebaseConfig = {
   apiKey: "YOUR_API_KEY",
   authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
@@ -132,7 +121,7 @@ const firebaseConfig = {
 };
 firebase.initializeApp(firebaseConfig);
 
-// ===== Google Login =====
+// Google login
 function googleLogin() {
     const provider = new firebase.auth.GoogleAuthProvider();
     firebase.auth().signInWithPopup(provider)
@@ -143,14 +132,10 @@ function googleLogin() {
                 <img src="${user.photoURL}" width="36" style="border-radius:50%;">
                 <span>${user.displayName}</span>
             </div>`;
-    })
-    .catch(err => {
-        console.error(err);
-        alert("Google login failed.");
-    });
+    }).catch(err => { console.error(err); alert("Google login failed."); });
 }
 
-// ===== Leaflet Map (Dark Tiles) =====
+// Leaflet Map
 const map = L.map('map').setView([10, 105], 3);
 L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
     attribution: '&copy; OpenStreetMap, CARTO',
@@ -158,53 +143,49 @@ L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
     maxZoom: 19
 }).addTo(map);
 
-// ===== Flight Route Layer =====
+// Flight route layer
 let flightLayer = null;
 
-// ===== Sidebar Navigation =====
+// Sidebar
 function showSection(section) {
     const formContainer = document.getElementById('formContainer');
-    formContainer.style.display = section === 'newFlight' ? 'block' : 'none';
+    formContainer.style.display = section==='newFlight'?'block':'none';
 }
 
-// ===== Add New Flight =====
-document.getElementById('flightForm').addEventListener('submit', async e => {
+// Handle flight plan upload
+document.getElementById('flightForm').addEventListener('submit', async e=>{
     e.preventDefault();
-
-    const dep = document.getElementById('departure').value;
-    const arr = document.getElementById('arrival').value;
-    const flightNum = document.getElementById('flightNumber').value;
     const file = document.getElementById('flightFile').files[0];
+    if(!file) return alert("Please select a JSON file");
 
-    if(file) {
-        const content = await file.text();
-        console.log('Flight JS uploaded:', content);
-        // eval(content); // nếu muốn chạy JS
-    }
+    const content = await file.text();
+    let flightPlan;
+    try { flightPlan = JSON.parse(content); }
+    catch(err){ return alert("Invalid JSON file"); }
 
-    // Demo flight: Sydney -> Singapore
-    const depCoord = [-33.9, 151.2];
-    const arrCoord = [1.36, 103.99];
+    if(!flightPlan.route || !Array.isArray(flightPlan.route) || flightPlan.route.length<2)
+        return alert("Flight plan must contain at least 2 coordinates");
 
+    // Remove old flight
     if(flightLayer) map.removeLayer(flightLayer);
 
-    // Polyline neon blue
-    flightLayer = L.polyline([depCoord, arrCoord], {
-        color:'#2ca1ff',
-        weight:4,
-        opacity:0.9,
-        dashArray: '10,5'
+    // Draw polyline dashed neon style
+    flightLayer = L.polyline(flightPlan.route, {
+        color: '#2ca1ff',
+        weight: 4,
+        opacity: 0.9,
+        dashArray: '8,6'
     }).addTo(map);
 
-    // Fake 3D effect: add shadow line slightly offset
-    L.polyline([depCoord, arrCoord], {
-        color:'#000',
-        weight:6,
-        opacity:0.2
-    }).addTo(map);
+    // Add tooltip popup on click
+    flightLayer.bindPopup(`
+        <b>Flight:</b> ${flightPlan.flightNumber || 'N/A'}<br>
+        <b>Aircraft:</b> ${flightPlan.aircraft || 'N/A'}<br>
+        <b>Airline:</b> ${flightPlan.airline || 'N/A'}
+    `);
 
     map.fitBounds(flightLayer.getBounds());
-    alert('Flight added: ' + flightNum);
+    alert(`Flight plan loaded: ${flightPlan.flightNumber || 'Unknown'}`);
 });
 </script>
 </body>
