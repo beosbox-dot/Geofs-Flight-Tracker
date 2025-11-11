@@ -3,259 +3,254 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>GeoFS Flight Tracker</title>
+<title>GeoFS FlightRadar Better</title>
 
-<!-- Leaflet CSS -->
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<!-- Leaflet -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 
 <style>
-/* ===== BASIC RESET ===== */
-body, html {
-  margin: 0;
-  padding: 0;
-  font-family: "Segoe UI", sans-serif;
-  background: #0d0d0d;
-  color: #fff;
-  overflow: hidden;
+:root {
+    --accent: #2ca1ff;
+    --bg-dark: #0e0f12;
+    --bg-sidebar: #16181c;
+    --text-light: #ddd;
+    --text-dim: #888;
 }
 
-/* ===== SIDEBAR ===== */
+body, html {
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, sans-serif;
+    background-color: var(--bg-dark);
+    color: var(--text-light);
+}
+
+/* Sidebar */
 #sidebar {
-  width: 250px;
-  height: 100vh;
-  background: linear-gradient(180deg, #111, #191919);
-  color: #fff;
-  float: left;
-  display: flex;
-  flex-direction: column;
-  box-shadow: 2px 0 10px rgba(0,0,0,0.5);
+    width: 270px;
+    height: 100vh;
+    background: var(--bg-sidebar);
+    display: flex;
+    flex-direction: column;
+    border-right: 1px solid #222;
+    box-shadow: 3px 0 10px rgba(0,0,0,0.4);
+    position: fixed;
 }
 
 #sidebar h1 {
-  text-align: center;
-  font-size: 20px;
-  padding: 20px;
-  background: #FF4136;
-  margin: 0;
-  letter-spacing: 1px;
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--accent);
+    text-align: center;
+    margin: 24px 0;
 }
 
 #sidebar button {
-  padding: 15px 20px;
-  border: none;
-  background: none;
-  color: #fff;
-  cursor: pointer;
-  text-align: left;
-  font-size: 15px;
-  transition: 0.2s;
+    padding: 14px 24px;
+    background: none;
+    border: none;
+    color: var(--text-light);
+    text-align: left;
+    font-size: 15px;
+    letter-spacing: 0.3px;
+    cursor: pointer;
+    transition: all 0.2s;
 }
 
 #sidebar button:hover {
-  background: #222;
-  border-left: 4px solid #FF4136;
+    background-color: #1f2227;
+    color: var(--accent);
 }
 
-/* ===== MAP ===== */
+#userInfo {
+    margin-top: auto;
+    padding: 20px;
+    font-size: 14px;
+    border-top: 1px solid #222;
+    color: var(--text-dim);
+}
+
+/* Map */
 #map {
-  position: absolute;
-  left: 250px;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  z-index: 1;
+    position: absolute;
+    left: 270px;
+    top: 0;
+    right: 0;
+    bottom: 0;
 }
 
-/* ===== FORM CONTAINER ===== */
+/* Form */
 #formContainer {
-  display: none;
-  position: absolute;
-  top: 0;
-  left: 250px;
-  width: calc(100% - 250px);
-  height: 100vh;
-  background: #f5f5f5;
-  color: #222;
-  padding: 30px;
-  overflow-y: auto;
-  z-index: 2;
+    display: none;
+    position: absolute;
+    top: 0;
+    left: 270px;
+    width: calc(100% - 270px);
+    height: 100vh;
+    background: #1b1d22;
+    padding: 40px;
+    color: var(--text-light);
+    overflow-y: auto;
 }
 
 #flightForm {
-  max-width: 500px;
-  margin: 0 auto;
+    max-width: 500px;
+    margin: 0 auto;
 }
 
 #flightForm h2 {
-  text-align: center;
-  color: #111;
+    color: var(--accent);
+    font-weight: 600;
+    margin-bottom: 20px;
 }
 
 #flightForm label {
-  font-weight: bold;
-  margin-top: 10px;
-  display: block;
+    display: block;
+    margin-top: 12px;
+    font-size: 14px;
+    color: var(--text-dim);
 }
 
-#flightForm input, #flightForm select {
-  width: 100%;
-  padding: 10px;
-  margin-top: 5px;
-  margin-bottom: 15px;
-  border-radius: 6px;
-  border: 1px solid #ccc;
-  font-size: 14px;
+#flightForm input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #333;
+    border-radius: 4px;
+    background: #121417;
+    color: var(--text-light);
+    margin-top: 4px;
+    font-size: 14px;
 }
 
 #flightForm button {
-  width: 100%;
-  background: #FF4136;
-  color: white;
-  border: none;
-  padding: 12px;
-  font-size: 16px;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: 0.2s;
+    background: var(--accent);
+    color: #fff;
+    padding: 12px;
+    border: none;
+    border-radius: 4px;
+    width: 100%;
+    margin-top: 16px;
+    font-size: 15px;
+    cursor: pointer;
+    transition: background 0.2s;
 }
-
 #flightForm button:hover {
-  background: #e0382e;
-}
-
-/* ===== SCROLLBAR ===== */
-#formContainer::-webkit-scrollbar { width: 8px; }
-#formContainer::-webkit-scrollbar-thumb {
-  background: #bbb; border-radius: 4px;
+    background: #1082e0;
 }
 </style>
 </head>
+
 <body>
 
-<!-- ===== SIDEBAR ===== -->
 <div id="sidebar">
-  <h1>GeoFS Tracker</h1>
-  <button onclick="showSection('home')">🏠 Home</button>
-  <button onclick="showSection('newFlight')">🛫 New Flight</button>
-  <button onclick="showSection('traffic')">🛰️ ADS-B Traffic</button>
-  <button onclick="login()">🔐 Login</button>
+    <h1>FlightRadar</h1>
+    <button onclick="showSection('home')">Home</button>
+    <button onclick="showSection('newFlight')">New Flight</button>
+    <button onclick="showSection('traffic')">ADS-B Traffic</button>
+    <button onclick="googleLogin()">Login with Google</button>
+    <div id="userInfo">Not logged in</div>
 </div>
 
-<!-- ===== MAP ===== -->
 <div id="map"></div>
 
-<!-- ===== FLIGHT FORM ===== -->
 <div id="formContainer">
-  <form id="flightForm">
-    <h2>🛫 Create New Flight</h2>
-    <label>Departure Airport</label>
-    <input type="text" id="departure" required placeholder="e.g. Sydney (YSSY)">
-    <label>Arrival Airport</label>
-    <input type="text" id="arrival" required placeholder="e.g. Singapore (WSSS)">
-    <label>Flight Number</label>
-    <input type="text" id="flightNumber" required placeholder="e.g. QF81">
-    <label>Aircraft</label>
-    <input type="text" id="aircraft" placeholder="e.g. Boeing 787-9">
-    <label>Airlines</label>
-    <input type="text" id="airlines" placeholder="e.g. Qantas Airways">
-    <label>Upload Flight JS</label>
-    <input type="file" id="flightFile" accept=".js">
-    <button type="submit">Add Flight</button>
-  </form>
+    <form id="flightForm">
+        <h2>New Flight</h2>
+        <label>Departure Airport</label>
+        <input type="text" id="departure" required>
+        <label>Arrival Airport</label>
+        <input type="text" id="arrival" required>
+        <label>Flight Number</label>
+        <input type="text" id="flightNumber" required>
+        <label>Aircraft</label>
+        <input type="text" id="aircraft">
+        <label>Airline</label>
+        <input type="text" id="airlines">
+        <label>Upload Flight .js</label>
+        <input type="file" id="flightFile" accept=".js">
+        <button type="submit">Add Flight</button>
+    </form>
 </div>
 
-<!-- ===== Leaflet JS ===== -->
+<!-- Leaflet -->
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
-<script>
-// === INITIAL MAP ===
-const map = L.map('map').setView([-25, 134.5], 3);
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
 
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-  attribution: '&copy; OpenStreetMap contributors',
-  maxZoom: 18
-}).addTo(map);
+<script>
+// === Firebase Config ===
+const firebaseConfig = {
+    apiKey: "YOUR_API_KEY",
+    authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+    projectId: "YOUR_PROJECT_ID",
+    storageBucket: "YOUR_PROJECT_ID.appspot.com",
+    messagingSenderId: "SENDER_ID",
+    appId: "APP_ID"
+};
+firebase.initializeApp(firebaseConfig);
+
+// === Google Login ===
+function googleLogin() {
+    const provider = new firebase.auth.GoogleAuthProvider();
+    firebase.auth().signInWithPopup(provider)
+        .then(result => {
+            const user = result.user;
+            document.getElementById('userInfo').innerHTML = `
+                <div style="display:flex;align-items:center;gap:10px;">
+                    <img src="${user.photoURL}" width="36" style="border-radius:50%;">
+                    <span>${user.displayName}</span>
+                </div>`;
+        })
+        .catch(err => {
+            console.error(err);
+            alert("Google login failed.");
+        });
+}
+
+// === Map Setup (Dark mode tile) ===
+const map = L.map('map').setView([10, 105], 3);
+
+L.tileLayer(
+    'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', 
+    {
+        attribution: '&copy; OpenStreetMap, CARTO',
+        subdomains: 'abcd',
+        maxZoom: 19
+    }
+).addTo(map);
 
 let flightLayer = null;
-let loggedUser = localStorage.getItem('user') || null;
 
 // === Sidebar Navigation ===
 function showSection(section) {
-  const formContainer = document.getElementById('formContainer');
-  formContainer.style.display = (section === 'newFlight') ? 'block' : 'none';
+    const formContainer = document.getElementById('formContainer');
+    formContainer.style.display = section === 'newFlight' ? 'block' : 'none';
 }
 
-// === Login (Demo) ===
-function login() {
-  const user = prompt("Enter your username:");
-  if (user) {
-    localStorage.setItem('user', user);
-    loggedUser = user;
-    alert(`✅ Logged in as ${user}`);
-  }
-}
+// === Handle New Flight ===
+document.getElementById('flightForm').addEventListener('submit', async e => {
+    e.preventDefault();
 
-// === Smooth Marker Animation ===
-function animateFlight(route) {
-  const icon = L.icon({
-    iconUrl: "https://cdn-icons-png.flaticon.com/512/34/34627.png",
-    iconSize: [28, 28],
-    iconAnchor: [14, 14]
-  });
+    const dep = document.getElementById('departure').value;
+    const arr = document.getElementById('arrival').value;
+    const flightNum = document.getElementById('flightNumber').value;
+    const file = document.getElementById('flightFile').files[0];
 
-  const plane = L.marker(route[0], { icon }).addTo(map);
-  let i = 0;
-  const interval = setInterval(() => {
-    if (i < route.length) {
-      plane.setLatLng(route[i]);
-      i++;
-    } else {
-      clearInterval(interval);
+    if(file) {
+        const content = await file.text();
+        console.log('Flight JS uploaded:', content);
     }
-  }, 300);
-}
 
-// === Handle Flight Form ===
-document.getElementById('flightForm').addEventListener('submit', async (e) => {
-  e.preventDefault();
+    // Demo route
+    const depCoord = [-33.9, 151.2]; // Sydney
+    const arrCoord = [1.36, 103.99]; // Singapore
 
-  const dep = document.getElementById('departure').value;
-  const arr = document.getElementById('arrival').value;
-  const flightNum = document.getElementById('flightNumber').value;
-  const aircraft = document.getElementById('aircraft').value;
-  const airlines = document.getElementById('airlines').value;
-  const file = document.getElementById('flightFile').files[0];
-
-  if (file) {
-    const content = await file.text();
-    console.log('📄 Uploaded Flight JS:', content);
-  }
-
-  // Sydney → Singapore (demo)
-  const depCoord = [-33.8688, 151.2093];
-  const arrCoord = [1.3521, 103.8198];
-  const route = [depCoord, arrCoord];
-
-  if (flightLayer) map.removeLayer(flightLayer);
-
-  flightLayer = L.polyline(route, {
-    color: '#FF4136',
-    weight: 4,
-    opacity: 0.9
-  }).addTo(map);
-
-  map.fitBounds(flightLayer.getBounds(), { padding: [50, 50] });
-  animateFlight(route);
-
-  if (loggedUser) {
-    const saved = JSON.parse(localStorage.getItem('flights') || '[]');
-    saved.push({ dep, arr, flightNum, aircraft, airlines, date: new Date().toISOString() });
-    localStorage.setItem('flights', JSON.stringify(saved));
-  }
-
-  alert(`✈️ Added: ${flightNum}\n${airlines} (${aircraft})\n${dep} → ${arr}`);
+    if(flightLayer) map.removeLayer(flightLayer);
+    flightLayer = L.polyline([depCoord, arrCoord], { color: '#2ca1ff', weight: 3 }).addTo(map);
+    map.fitBounds(flightLayer.getBounds());
 });
 </script>
-
 </body>
 </html>
