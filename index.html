@@ -3,31 +3,28 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AeroPulse - Premium Glass UI</title>
+<title>AeroPulse - Full Flight Form</title>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 <style>
-/* 🌌 Reset và Base Styles */
-* {margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',sans-serif;}
-body, html {width:100%;height:100%;background:linear-gradient(135deg,#0b0c10,#1a1a2e);color:#fff;overflow:hidden;}
+/* 🌌 Reset & base */
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',sans-serif;}
+body,html{width:100%;height:100%;background:linear-gradient(135deg,#0b0c10,#1a1a2e);color:#fff;overflow:hidden;}
 
-/* 🖤 Sidebar Glass UI */
-#sidebar {
-    width:80px;height:100vh;
-    background:rgba(18,18,25,0.65);
-    backdrop-filter:blur(20px);
-    display:flex;flex-direction:column;align-items:center;padding:20px 0;
-    position:fixed;left:0;top:0;z-index:1000;
-    border-right:1px solid rgba(255,255,255,0.05);
-    box-shadow:0 0 20px rgba(0,0,0,0.5);
-    transition:all 0.35s cubic-bezier(0.25,1,0.5,1);
+/* 🖤 Sidebar */
+#sidebar{
+  width:80px;height:100vh;
+  background:rgba(18,18,25,0.65);
+  backdrop-filter:blur(20px);
+  display:flex;flex-direction:column;align-items:center;padding:20px 0;
+  position:fixed;left:0;top:0;z-index:1000;
+  border-right:1px solid rgba(255,255,255,0.05);
 }
-#sidebar .logo{font-size:20px;font-weight:700;color:#2ca1ff;margin-bottom:30px;letter-spacing:1px;}
-/* Custom SVG Symbols for Buttons */
+#sidebar .logo{font-size:20px;font-weight:700;color:#2ca1ff;margin-bottom:30px;}
 .sidebar-btn{
-    width:50px;height:50px;margin:12px 0;
-    background:rgba(255,255,255,0.05);
-    display:flex;justify-content:center;align-items:center;
-    cursor:pointer;position:relative;transition:all 0.25s cubic-bezier(0.25,1,0.5,1);
+  width:50px;height:50px;margin:12px 0;
+  background:rgba(255,255,255,0.05);
+  display:flex;justify-content:center;align-items:center;
+  cursor:pointer;transition:all 0.25s;position:relative;
 }
 .sidebar-btn:hover,.sidebar-btn.active{background:rgba(44,161,255,0.2);transform:scale(1.15);}
 .sidebar-btn svg{width:24px;height:24px;fill:#bbb;transition:fill 0.25s;}
@@ -36,11 +33,11 @@ body, html {width:100%;height:100%;background:linear-gradient(135deg,#0b0c10,#1a
 /* 🗺️ Map */
 #map{position:absolute;top:0;left:80px;right:0;bottom:0;z-index:0;}
 
-/* 💧 Glassy Pop-up Animation */
+/* 💧 Pop-up glassy */
 #formContainer{
-    display:none;position:absolute;top:0;left:80px;width:calc(100% - 80px);height:100vh;
-    background:rgba(18,18,28,0.65);backdrop-filter:blur(22px);
-    padding:40px;overflow-y:auto;z-index:1000;
+  display:none;position:absolute;top:0;left:80px;width:calc(100%-80px);height:100vh;
+  background:rgba(18,18,28,0.65);backdrop-filter:blur(22px);
+  padding:40px;overflow-y:auto;z-index:1000;
 }
 #formContainer.show{animation:popWaterIn 0.35s cubic-bezier(0.25,1,0.5,1) forwards;}
 #formContainer.hide{animation:popWaterOut 0.35s cubic-bezier(0.25,1,0.5,1) forwards;}
@@ -49,36 +46,35 @@ body, html {width:100%;height:100%;background:linear-gradient(135deg,#0b0c10,#1a
 
 /* ✈️ Flight Form */
 #flightForm{
-    max-width:520px;margin:0 auto;
-    background:rgba(30,30,40,0.7);
-    padding:30px 40px;border-radius:4px; /* góc cạnh */
-    box-shadow:0 12px 30px rgba(0,0,0,0.5);
-    backdrop-filter:blur(18px);
+  max-width:520px;margin:0 auto;
+  background:rgba(30,30,40,0.7);
+  padding:30px 40px;border-radius:4px;
+  box-shadow:0 12px 30px rgba(0,0,0,0.5);backdrop-filter:blur(18px);
 }
 #flightForm h2{text-align:center;color:#2ca1ff;font-weight:600;font-size:20px;margin-bottom:20px;}
 #flightForm label{display:block;color:#ccc;margin-top:12px;font-size:14px;}
 #flightForm input,#flightForm select{
-    width:100%;padding:10px 12px;border:1px solid rgba(255,255,255,0.2);
-    background:rgba(20,22,28,0.5);color:#fff;margin-top:6px;font-size:14px;
-    transition:all 0.25s;
+  width:100%;padding:10px 12px;border:1px solid rgba(255,255,255,0.2);
+  background:rgba(20,22,28,0.5);color:#fff;margin-top:6px;font-size:14px;
+  transition:all 0.25s;
 }
 #flightForm input:focus,#flightForm select:focus{border-color:#2ca1ff;box-shadow:0 0 10px rgba(44,161,255,0.3);outline:none;}
 #flightForm button{
-    width:100%;padding:12px;margin-top:20px;border:none;background:#2ca1ff;color:#fff;font-size:15px;font-weight:600;cursor:pointer;
-    transition:0.25s, transform 0.2s;
+  width:100%;padding:12px;margin-top:20px;border:none;background:#2ca1ff;color:#fff;font-size:15px;font-weight:600;cursor:pointer;
+  transition:0.25s, transform 0.2s;
 }
 #flightForm button:hover{background:#1b8de0;transform:translateY(-2px);}
 
-/* 🎫 Passenger Ticket Preview */
+/* 🎫 Ticket */
 #ticket{
-    margin-top:20px;background:rgba(20,22,28,0.8);
-    padding:20px;color:#fff;border-left:4px solid #2ca1ff;
-    display:none;font-size:14px;
+  margin-top:20px;background:rgba(20,22,28,0.8);
+  padding:20px;color:#fff;border-left:4px solid #2ca1ff;
+  display:none;font-size:14px;
 }
 
 /* 🌀 Scrollbar */
 #formContainer::-webkit-scrollbar{width:10px;}
-#formContainer::-webkit-scrollbar-thumb{background:rgba(100,100,100,0.4);border-radius:2px;}
+#formContainer::-webkit-scrollbar-thumb{background:rgba(100,100,100,0.4);}
 #formContainer::-webkit-scrollbar-thumb:hover{background:rgba(180,180,180,0.5);}
 </style>
 </head>
@@ -86,105 +82,74 @@ body, html {width:100%;height:100%;background:linear-gradient(135deg,#0b0c10,#1a
 
 <!-- Sidebar -->
 <div id="sidebar">
-    <div class="logo">Aero</div>
-    <div class="sidebar-btn" id="homeBtn" title="Home">
-        <!-- Custom house SVG -->
-        <svg viewBox="0 0 24 24"><path d="M3 11L12 2l9 9v11a1 1 0 0 1-1 1h-6v-6h-4v6H4a1 1 0 0 1-1-1V11z"/></svg>
-    </div>
-    <div class="sidebar-btn" id="newFlightBtn" title="New Flight">
-        <!-- Custom airplane SVG -->
-        <svg viewBox="0 0 24 24"><path d="M2.5 19.5l19-7-19-7v4l14 3-14 3v4z"/></svg>
-    </div>
-    <div class="sidebar-btn" id="trafficBtn" title="Traffic">
-        <!-- Custom radar SVG -->
-        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke="#fff" stroke-width="2" fill="none"/><path d="M12 2a10 10 0 0 1 0 20"/></svg>
-    </div>
+  <div class="logo">Aero</div>
+  <div class="sidebar-btn" id="homeBtn"><svg viewBox="0 0 24 24"><path d="M3 11L12 2l9 9v11a1 1 0 0 1-1 1h-6v-6h-4v6H4a1 1 0 0 1-1-1V11z"/></svg></div>
+  <div class="sidebar-btn" id="newFlightBtn"><svg viewBox="0 0 24 24"><path d="M2.5 19.5l19-7-19-7v4l14 3-14 3v4z"/></svg></div>
+  <div class="sidebar-btn" id="trafficBtn"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke="#fff" stroke-width="2" fill="none"/><path d="M12 2a10 10 0 0 1 0 20"/></svg></div>
 </div>
 
 <!-- Map -->
 <div id="map"></div>
 
-<!-- Glassy pop-up -->
+<!-- Form Container -->
 <div id="formContainer">
-    <form id="flightForm">
-        <h2>New Flight Plan</h2>
-        <label>Departure Airport</label>
-        <input type="text" id="departure" placeholder="e.g. JFK" required>
-        <label>Arrival Airport</label>
-        <input type="text" id="arrival" placeholder="e.g. LAX" required>
-        <label>Callsign</label>
-        <input type="text" id="callsign" placeholder="Flight number" required>
-        <label>Select Aircraft</label>
-        <select id="aircraft">
-            <option value="A320">Airbus A320</option>
-            <option value="B737">Boeing 737</option>
-            <option value="B777">Boeing 777</option>
-            <option value="A380">Airbus A380</option>
-        </select>
-        <button type="submit">Load Flight</button>
-        <div id="ticket"></div>
-    </form>
+<form id="flightForm">
+  <h2>New Flight Plan</h2>
+  <label>Departure Airport</label>
+  <input type="text" id="departure" placeholder="e.g. JFK" required>
+  <label>Arrival Airport</label>
+  <input type="text" id="arrival" placeholder="e.g. LAX" required>
+  <label>Callsign</label>
+  <input type="text" id="callsign" placeholder="Flight number" required>
+  <label>Select Aircraft</label>
+  <select id="aircraft">
+    <option value="A320">Airbus A320</option>
+    <option value="B737">Boeing 737</option>
+    <option value="B777">Boeing 777</option>
+    <option value="A380">Airbus A380</option>
+  </select>
+  <button type="submit">Load Flight</button>
+  <div id="ticket"></div>
+</form>
 </div>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
-// ===== Map setup =====
+// ===== Map =====
 const map = L.map('map',{minZoom:3,maxZoom:15,zoomControl:true}).setView([20,0],2);
 L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',{
-    attribution:'&copy; OpenStreetMap, CARTO', subdomains:'abcd', maxZoom:19
+  attribution:'&copy; OpenStreetMap, CARTO', subdomains:'abcd', maxZoom:19
 }).addTo(map);
 
-// Dummy airport positions (can replace bằng toàn cầu dataset)
-const airports = {
-    "JFK":[40.6413,-73.7781],
-    "LAX":[33.9416,-118.4085],
-    "CDG":[49.0097,2.5479],
-    "HND":[35.5494,139.7798]
-};
-
+// Airport positions (demo dataset, cần full dataset thế giới)
+const airports = {"JFK":[40.6413,-73.7781],"LAX":[33.9416,-118.4085],"CDG":[49.0097,2.5479],"HND":[35.5494,139.7798]};
 let flightLayer = null;
 
-// ===== Sidebar Buttons =====
-const formContainer = document.getElementById('formContainer');
-document.getElementById('newFlightBtn').addEventListener('click', ()=>{
-    formContainer.classList.remove('hide');
-    formContainer.classList.add('show');
-    formContainer.style.display='block';
-});
-document.getElementById('homeBtn').addEventListener('click', ()=>{
-    formContainer.classList.remove('show');formContainer.classList.add('hide');
-    setTimeout(()=>formContainer.style.display='none',350);
-});
-document.getElementById('trafficBtn').addEventListener('click', ()=>{
-    formContainer.classList.remove('show');formContainer.classList.add('hide');
-    setTimeout(()=>formContainer.style.display='none',350);
-});
+// Sidebar interactions
+const formContainer=document.getElementById('formContainer');
+document.getElementById('newFlightBtn').addEventListener('click',()=>{formContainer.classList.remove('hide');formContainer.classList.add('show');formContainer.style.display='block';});
+document.getElementById('homeBtn').addEventListener('click',()=>{formContainer.classList.remove('show');formContainer.classList.add('hide');setTimeout(()=>formContainer.style.display='none',350);});
+document.getElementById('trafficBtn').addEventListener('click',()=>{formContainer.classList.remove('show');formContainer.classList.add('hide');setTimeout(()=>formContainer.style.display='none',350);});
 
-// ===== Flight Plan Submission =====
-document.getElementById('flightForm').addEventListener('submit', e=>{
-    e.preventDefault();
-    const dep = document.getElementById('departure').value.toUpperCase();
-    const arr = document.getElementById('arrival').value.toUpperCase();
-    const callsign = document.getElementById('callsign').value.toUpperCase();
-    const aircraft = document.getElementById('aircraft').value;
+// Flight form submit
+document.getElementById('flightForm').addEventListener('submit',e=>{
+  e.preventDefault();
+  const dep=document.getElementById('departure').value.toUpperCase();
+  const arr=document.getElementById('arrival').value.toUpperCase();
+  const callsign=document.getElementById('callsign').value.toUpperCase();
+  const aircraft=document.getElementById('aircraft').value;
 
-    if(!airports[dep] || !airports[arr]) {alert("Airport not found in dataset!"); return;}
+  if(!airports[dep]||!airports[arr]){alert("Airport not found!");return;}
+  const depPos=airports[dep],arrPos=airports[arr];
 
-    const depPos = airports[dep];
-    const arrPos = airports[arr];
+  if(flightLayer) map.removeLayer(flightLayer);
+  flightLayer=L.polyline([depPos,arrPos],{color:'#2ca1ff',weight:4,opacity:0.9,dashArray:'8,6'}).addTo(map);
+  flightLayer.bindPopup(`<b>Callsign:</b>${callsign}<br><b>Aircraft:</b>${aircraft}<br><b>Departure:</b>${dep}<br><b>Arrival:</b>${arr}`);
+  map.fitBounds(flightLayer.getBounds(),{padding:[50,50]});
 
-    // Remove previous flight
-    if(flightLayer) map.removeLayer(flightLayer);
-
-    // Draw polyline flight route
-    flightLayer = L.polyline([depPos,arrPos],{color:'#2ca1ff',weight:4,opacity:0.9,dashArray:'8,6'}).addTo(map);
-    flightLayer.bindPopup(`<b>Callsign:</b>${callsign}<br><b>Aircraft:</b>${aircraft}<br><b>Departure:</b>${dep}<br><b>Arrival:</b>${arr}`);
-    map.fitBounds(flightLayer.getBounds(),{padding:[50,50]});
-
-    // Show Passenger Ticket Preview
-    const ticket = document.getElementById('ticket');
-    ticket.innerHTML = `<b>Flight:</b> ${callsign}<br><b>Aircraft:</b> ${aircraft}<br><b>From:</b> ${dep}<br><b>To:</b> ${arr}<br><b>Seat:</b> Not selected yet`;
-    ticket.style.display='block';
+  const ticket=document.getElementById('ticket');
+  ticket.innerHTML=`<b>Flight:</b>${callsign}<br><b>Aircraft:</b>${aircraft}<br><b>From:</b>${dep}<br><b>To:</b>${arr}`;
+  ticket.style.display='block';
 });
 </script>
 </body>
