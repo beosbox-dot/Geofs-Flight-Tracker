@@ -35,7 +35,7 @@ body,html{width:100%;height:100%;background:linear-gradient(135deg,#0b0c10,#1a1a
 
 /* 💧 Pop-up glassy */
 #formContainer{
-  display:none;position:absolute;top:0;left:80px;width:calc(100%-80px);height:100vh;
+  display:none;position:absolute;top:0;left:80px;width:calc(100% - 80px);height:100vh; /* Sửa lỗi cú pháp CSS (100%-80px) */
   background:rgba(18,18,28,0.65);backdrop-filter:blur(22px);
   padding:40px;overflow-y:auto;z-index:1000;
 }
@@ -407,7 +407,7 @@ const airports = {
   "CXR": [11.9967, 109.2197],
   "PQC": [10.2222, 103.9572],
   "KTM": [27.6974, 85.3567],
-  "DAC": [23.8433, 90.3978] /* Sửa lỗi cú pháp */
+  "DAC": [23.8433, 90.3978] 
 };
 let flightLayer = null;
 
@@ -425,7 +425,7 @@ document.getElementById('flightForm').addEventListener('submit',e=>{
   const callsign=document.getElementById('callsign').value.toUpperCase();
   const aircraft=document.getElementById('aircraft').options[document.getElementById('aircraft').selectedIndex].text; // Lấy tên đầy đủ của máy bay
 
-  if(!airports[dep]||!airports[arr]){alert("Airport not found! Please use a valid IATA code.");return;}
+  if(!airports[dep]||!airports[arr]){alert("Airport not found! Please use a valid IATA code (e.g., JFK, HAN).");return;}
   const depPos=airports[dep],arrPos=airports[arr];
 
   if(flightLayer) map.removeLayer(flightLayer);
@@ -447,4 +447,3 @@ document.getElementById('flightForm').addEventListener('submit',e=>{
 </script>
 </body>
 </html>
-
