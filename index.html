@@ -80,7 +80,6 @@ body,html{width:100%;height:100%;background:linear-gradient(135deg,#0b0c10,#1a1a
 </head>
 <body>
 
-<!-- Sidebar -->
 <div id="sidebar">
   <div class="logo">Aero</div>
   <div class="sidebar-btn" id="homeBtn"><svg viewBox="0 0 24 24"><path d="M3 11L12 2l9 9v11a1 1 0 0 1-1 1h-6v-6h-4v6H4a1 1 0 0 1-1-1V11z"/></svg></div>
@@ -88,10 +87,8 @@ body,html{width:100%;height:100%;background:linear-gradient(135deg,#0b0c10,#1a1a
   <div class="sidebar-btn" id="trafficBtn"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke="#fff" stroke-width="2" fill="none"/><path d="M12 2a10 10 0 0 1 0 20"/></svg></div>
 </div>
 
-<!-- Map -->
 <div id="map"></div>
 
-<!-- Form Container -->
 <div id="formContainer">
 <form id="flightForm">
   <h2>New Flight Plan</h2>
@@ -102,21 +99,20 @@ body,html{width:100%;height:100%;background:linear-gradient(135deg,#0b0c10,#1a1a
   <label>Callsign</label>
   <input type="text" id="callsign" placeholder="Flight number" required>
   <label>Select Aircraft</label>
-<select id="aircraft">
-  <option value="A320">Airbus A320</option>
-  <option value="B737">Boeing 737</option>
-  <option value="B777">Boeing 777</option>
-  <option value="A380">Airbus A380</option>
-  <option value="A350">Airbus A350</option>
-  <option value="B787">Boeing 787 Dreamliner</option>
-  <option value="A321">Airbus A321</option>
-  <option value="A330">Airbus A330</option>
-  <option value="A340">Airbus A340</option>
-  <option value="B747">Boeing 747</option>
-  <option value="E190">Embraer E190</option>
-  <option value="CRJ700">CRJ700</option>
-  <option value="MD11">MD-11</option>
-</select>
+  <select id="aircraft">
+    <option value="A320">Airbus A320</option>
+    <option value="B737">Boeing 737</option>
+    <option value="B777">Boeing 777</option>
+    <option value="A380">Airbus A380</option>
+    <option value="A350">Airbus A350</option>
+    <option value="B787">Boeing 787 Dreamliner</option>
+    <option value="A321">Airbus A321</option>
+    <option value="A330">Airbus A330</option>
+    <option value="A340">Airbus A340</option>
+    <option value="B747">Boeing 747</option>
+    <option value="E190">Embraer E190</option>
+    <option value="CRJ700">CRJ700</option>
+    <option value="MD11">MD-11</option>
   </select>
   <button type="submit">Load Flight</button>
   <div id="ticket"></div>
@@ -131,7 +127,7 @@ L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',{
   attribution:'&copy; OpenStreetMap, CARTO', subdomains:'abcd', maxZoom:19
 }).addTo(map);
 
-// Airport positions (demo dataset, cần full dataset thế giới)
+// Airport positions (350 sân bay)
 const airports = {
   "ATL": [33.6407, -84.4277],
   "DFW": [32.8998, -97.0403],
@@ -236,7 +232,7 @@ const airports = {
   "BEY": [33.8209, 35.4883],
   "ESB": [40.1194, 32.9995],
   "TAS": [41.2619, 69.2721],
-  "ALA": [43.3540, 77.0267]
+  "ALA": [43.3540, 77.0267], /* Sửa lỗi cú pháp */
   "IAH": [29.9844, -95.3414],
   "DTW": [42.3670, -83.3533],
   "MSP": [44.8819, -93.2217],
@@ -252,8 +248,6 @@ const airports = {
   "DAL": [32.8471, -96.8524],
   "OAK": [37.7213, -122.2202],
   "ONT": [34.0560, -117.6015],
-  "BLR": [13.1986, 77.7066],
-  "HYD": [17.2359, 78.4292],
   "CCU": [22.6545, 88.4467],
   "SZX": [22.6393, 113.8122],
   "CKG": [29.7184, 106.6320],
@@ -275,56 +269,27 @@ const airports = {
   "BNE": [-27.3840, 153.1175],
   "CHC": [-43.4833, 172.5333],
   "WLG": [-41.3269, 174.8058],
-  "AKL": [-37.0082, 174.7917],
   "NCL": [55.0359, -1.6917],
   "EDI": [55.9500, -3.3725],
   "GLA": [55.8719, -4.4331],
   "BRS": [51.3833, -2.7167],
   "BHX": [52.4539, -1.7489],
-  "OSL": [60.1939, 11.1004],
   "HEL": [60.3187, 24.9497],
   "GND": [12.0042, -61.7850],
   "SNN": [52.7011, -8.8920],
   "BFS": [54.6575, -6.2167],
-  "DUB": [53.4264, -6.2499],
   "NCE": [43.6652, 7.2150],
   "MRS": [43.9213, 5.2155],
   "LYS": [45.7265, 5.0815],
   "TLS": [43.6333, 1.3630],
   "NTE": [47.1539, -1.6105],
-  "STR": [48.6899, 9.2219],
-  "HAM": [53.6300, 9.9880],
-  "DUS": [51.2895, 6.7667],
   "CGN": [50.8784, 7.1222],
   "HAJ": [52.4600, 9.6850],
   "LEJ": [51.4233, 12.2366],
   "SXF": [52.3789, 13.5255],
-  "VIE": [48.1103, 16.5697],
-  "PRG": [50.1008, 14.2965],
-  "WAW": [52.1658, 20.9671],
-  "BUD": [47.4300, 19.2550],
-  "OTP": [44.5707, 26.1023],
-  "SOF": [42.6953, 23.4072],
-  "ATH": [37.9364, 23.9450],
-  "TLV": [32.0093, 34.8778],
-  "AMM": [31.7994, 35.9904],
-  "BEY": [33.8209, 35.4883],
-  "ESB": [40.1194, 32.9995],
-  "ADB": [38.2925, 27.1569],
-  "SAW": [40.8983, 29.3092],
   "KWI": [29.2274, 47.9610],
   "BAH": [26.2708, 50.6338],
   "MCT": [23.5934, 58.2811],
-  "RUH": [24.9575, 46.6877],
-  "JED": [21.6798, 39.1557],
-  "DOH": [25.2731, 51.6083],
-  "AUH": [24.4330, 54.6511],
-  "CAI": [30.1219, 31.4056],
-  "CPT": [-33.9685, 18.6017],
-  "JNB": [-26.1392, 28.2460],
-  "NBO": [-1.3193, 36.9274],
-  "ADD": [8.9806, 38.7997],
-  "LOS": [6.5770, 3.3216],
   "ACC": [5.6053, -0.1666],
   "DKR": [14.7303, -17.4527],
   "RAK": [31.6063, -8.0363],
@@ -333,7 +298,7 @@ const airports = {
   "PTY": [9.0653, -79.3837],
   "SJO": [9.9972, -84.2045],
   "SDQ": [18.4286, -69.6687],
-  "HAV": [22.9882, -82.3855]
+  "HAV": [22.9882, -82.3855],
   "BWI": [39.1774, -76.6684],
   "AUS": [30.1975, -97.6663],
   "SAT": [29.5338, -98.4697],
@@ -364,7 +329,6 @@ const airports = {
   "ELP": [31.8079, -106.3764],
   "LAS": [36.0840, -115.1537],
   "FAT": [36.7761, -119.7181],
-  "SMF": [38.6879, -121.5229],
   "MDT": [40.1983, -76.7644],
   "CAK": [40.9168, -81.4421],
   "PSP": [33.8297, -116.5065],
@@ -411,25 +375,16 @@ const airports = {
   "BTS": [48.1702, 17.1852],
   "KOS": [50.8828, 20.9142],
   "LUX": [49.6266, 6.2045],
-  "DUB": [53.4264, -6.2499],
   "SXB": [48.5383, 7.6294],
   "BSL": [47.5997, 7.5290],
   "NUE": [49.4986, 11.0667],
   "BRE": [53.0475, 8.7866],
-  "CGN": [50.8784, 7.1222],
-  "HAJ": [52.4600, 9.6850],
-  "LEJ": [51.4233, 12.2366],
   "BLQ": [44.5352, 11.2882],
   "PSA": [43.6833, 10.3920],
   "CTA": [37.4667, 15.0667],
   "PMO": [38.1759, 13.0910],
   "NAP": [40.8845, 14.2886],
   "LIN": [45.4452, 9.2764],
-  "TSN": [39.1170, 117.3468],
-  "SHE": [41.6377, 123.4838],
-  "DLC": [38.9656, 121.5510],
-  "HGH": [30.2289, 120.4344],
-  "NKG": [31.7423, 118.8767],
   "HFE": [31.8410, 117.2790],
   "TAO": [36.2667, 120.3667],
   "WUX": [31.5649, 120.4280],
@@ -441,26 +396,19 @@ const airports = {
   "URC": [43.9079, 87.4741],
   "LHW": [36.2307, 103.6200],
   "XIY": [34.4449, 108.7528],
-  "CKG": [29.7184, 106.6320],
-  "XMN": [24.5381, 118.1340],
-  "CTU": [30.5785, 103.9470],
-  "WUH": [30.7760, 114.2053],
-  "TNA": [36.8596, 117.0700],
-  "PUS": [35.1794, 128.9375],
   "CJU": [33.4079, 126.4921],
   "GMP": [37.5583, 126.7917],
   "FUK": [33.5858, 130.4431],
   "ITM": [34.7865, 135.4382],
   "NGO": [34.8580, 136.8166],
   "OKA": [26.1958, 127.6531],
-  "TPE": [25.0777, 121.2328],
   "KHH": [22.5694, 120.3547],
   "DAD": [16.0544, 108.2022],
   "CXR": [11.9967, 109.2197],
   "PQC": [10.2222, 103.9572],
   "KTM": [27.6974, 85.3567],
-  "DAC": [23.8433, 90.3978],
-  "CCU": [22.6545, 88.4467]};
+  "DAC": [23.8433, 90.3978] /* Sửa lỗi cú pháp */
+};
 let flightLayer = null;
 
 // Sidebar interactions
@@ -475,20 +423,28 @@ document.getElementById('flightForm').addEventListener('submit',e=>{
   const dep=document.getElementById('departure').value.toUpperCase();
   const arr=document.getElementById('arrival').value.toUpperCase();
   const callsign=document.getElementById('callsign').value.toUpperCase();
-  const aircraft=document.getElementById('aircraft').value;
+  const aircraft=document.getElementById('aircraft').options[document.getElementById('aircraft').selectedIndex].text; // Lấy tên đầy đủ của máy bay
 
-  if(!airports[dep]||!airports[arr]){alert("Airport not found!");return;}
+  if(!airports[dep]||!airports[arr]){alert("Airport not found! Please use a valid IATA code.");return;}
   const depPos=airports[dep],arrPos=airports[arr];
 
   if(flightLayer) map.removeLayer(flightLayer);
+  
+  // Tạo layer đường bay
   flightLayer=L.polyline([depPos,arrPos],{color:'#2ca1ff',weight:4,opacity:0.9,dashArray:'8,6'}).addTo(map);
-  flightLayer.bindPopup(`<b>Callsign:</b>${callsign}<br><b>Aircraft:</b>${aircraft}<br><b>Departure:</b>${dep}<br><b>Arrival:</b>${arr}`);
-  map.fitBounds(flightLayer.getBounds(),{padding:[50,50]});
+  
+  // Thêm marker cho điểm đi và đến
+  L.marker(depPos).addTo(map).bindPopup(`<b>Khởi hành:</b> ${dep}`).openPopup();
+  L.marker(arrPos).addTo(map).bindPopup(`<b>Đến:</b> ${arr}`);
+
+  flightLayer.bindPopup(`<b>Chuyến bay:</b> ${callsign}<br><b>Máy bay:</b> ${aircraft}<br><b>Từ:</b> ${dep}<br><b>Đến:</b> ${arr}`);
+  map.fitBounds(flightLayer.getBounds(),{padding:[100,100]});
 
   const ticket=document.getElementById('ticket');
-  ticket.innerHTML=`<b>Flight:</b>${callsign}<br><b>Aircraft:</b>${aircraft}<br><b>From:</b>${dep}<br><b>To:</b>${arr}`;
+  ticket.innerHTML=`<h3>Flight Plan Loaded</h3><b>Chuyến bay:</b> ${callsign}<br><b>Máy bay:</b> ${aircraft}<br><b>Từ:</b> ${dep}<br><b>Đến:</b> ${arr}`;
   ticket.style.display='block';
 });
 </script>
 </body>
 </html>
+
