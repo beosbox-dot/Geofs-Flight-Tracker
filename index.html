@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>AeroPulse - Full Flight Form</title>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
 <style>
 /* 🌌 Reset & base */
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',sans-serif;}
@@ -35,7 +36,7 @@ body,html{width:100%;height:100%;background:linear-gradient(135deg,#0b0c10,#1a1a
 
 /* 💧 Pop-up glassy */
 #formContainer{
-  display:none;position:absolute;top:0;left:80px;width:calc(100% - 80px);height:100vh; /* Sửa lỗi cú pháp CSS (100%-80px) */
+  display:none;position:absolute;top:0;left:80px;width:calc(100% - 80px);height:100vh;
   background:rgba(18,18,28,0.65);backdrop-filter:blur(22px);
   padding:40px;overflow-y:auto;z-index:1000;
 }
@@ -78,6 +79,7 @@ body,html{width:100%;height:100%;background:linear-gradient(135deg,#0b0c10,#1a1a
 #formContainer::-webkit-scrollbar-thumb:hover{background:rgba(180,180,180,0.5);}
 </style>
 </head>
+
 <body>
 
 <div id="sidebar">
@@ -127,9 +129,8 @@ L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',{
   attribution:'&copy; OpenStreetMap, CARTO', subdomains:'abcd', maxZoom:19
 }).addTo(map);
 
-// Airport positions (350 sân bay)
-const airports = {
-  "ATL": [33.6407, -84.4277],
+// Airports (giữ nguyên danh sách của bạn)
+const airports = { "ATL": [33.6407, -84.4277],
   "DFW": [32.8998, -97.0403],
   "DEN": [39.8561, -104.6737],
   "ORD": [41.9742, -87.9073],
@@ -408,95 +409,69 @@ const airports = {
   "PQC": [10.2222, 103.9572],
   "KTM": [27.6974, 85.3567],
   "DAC": [23.8433, 90.3978] 
-};
-<script>
-// ===== Map =====
-const map = L.map('map', {minZoom:3, maxZoom:15, zoomControl:true}).setView([20,0],2);
-L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',{
-    attribution:'&copy; OpenStreetMap, CARTO', subdomains:'abcd', maxZoom:19
-}).addTo(map);
-
-// Airport positions (giữ nguyên từ airports {...})
-//...
-
+                 };
 let flightLayer = null;
 
-// Great Circle function
-function generateGreatCircle(start, end, steps = 200){
-    const coords = [];
-    const [lat1, lon1] = start.map(d => d * Math.PI/180);
-    const [lat2, lon2] = end.map(d => d * Math.PI/180);
-
-    const d = 2 * Math.asin(Math.sqrt(Math.sin((lat2-lat1)/2)**2 + Math.cos(lat1)*Math.cos(lat2)*Math.sin((lon2-lon1)/2)**2));
-
-    for(let i=0;i<=steps;i++){
-        const f = i/steps;
-        const A = Math.sin((1-f)*d)/Math.sin(d);
-        const B = Math.sin(f*d)/Math.sin(d);
-        const x = A*Math.cos(lat1)*Math.cos(lon1) + B*Math.cos(lat2)*Math.cos(lon2);
-        const y = A*Math.cos(lat1)*Math.sin(lon1) + B*Math.cos(lat2)*Math.sin(lon2);
-        const z = A*Math.sin(lat1) + B*Math.sin(lat2);
-        const lat = Math.atan2(z, Math.sqrt(x*x+y*y));
-        const lon = Math.atan2(y, x);
-        coords.push([lat*180/Math.PI, lon*180/Math.PI]);
-    }
-    return coords;
-}
+// Sidebar interactions
+const formContainer=document.getElementById('formContainer');
+document.getElementById('newFlightBtn').addEventListener('click',()=>{formContainer.classList.remove('hide');formContainer.classList.add('show');formContainer.style.display='block';});
+document.getElementById('homeBtn').addEventListener('click',()=>{formContainer.classList.remove('show');formContainer.classList.add('hide');setTimeout(()=>formContainer.style.display='none',350);});
+document.getElementById('trafficBtn').addEventListener('click',()=>{formContainer.classList.remove('show');formContainer.classList.add('hide');setTimeout(()=>formContainer.style.display='none',350);});
 
 // Flight form submit
 document.getElementById('flightForm').addEventListener('submit', e=>{
-    e.preventDefault();
-    const dep = document.getElementById('departure').value.toUpperCase();
-    const arr = document.getElementById('arrival').value.toUpperCase();
-    const callsign = document.getElementById('callsign').value.toUpperCase();
-    const aircraft = document.getElementById('aircraft').value;
+  e.preventDefault();
+  const dep = document.getElementById('departure').value.toUpperCase();
+  const arr = document.getElementById('arrival').value.toUpperCase();
+  const callsign = document.getElementById('callsign').value.toUpperCase();
+  const aircraft = document.getElementById('aircraft').options[document.getElementById('aircraft').selectedIndex].text;
 
-    if(!airports[dep] || !airports[arr]){
-        alert("Airport not found! Please use valid IATA codes (e.g., JFK, HAN).");
-        return;
+  if(!airports[dep] || !airports[arr]) { alert("Airport not found!"); return; }
+  const depPos = airports[dep], arrPos = airports[arr];
+
+  if(flightLayer) map.removeLayer(flightLayer);
+
+  // Great circle line
+  function generateGreatCircle(start, end, steps=100){
+    const coords=[];
+    const [lat1, lon1] = start.map(d=>d*Math.PI/180);
+    const [lat2, lon2] = end.map(d=>d*Math.PI/180);
+    const d = 2*Math.asin(Math.sqrt(Math.sin((lat2-lat1)/2)**2 + Math.cos(lat1)*Math.cos(lat2)*Math.sin((lon2-lon1)/2)**2));
+    for(let i=0;i<=steps;i++){
+      const f=i/steps;
+      const A=Math.sin((1-f)*d)/Math.sin(d), B=Math.sin(f*d)/Math.sin(d);
+      const x = A*Math.cos(lat1)*Math.cos(lon1)+B*Math.cos(lat2)*Math.cos(lon2);
+      const y = A*Math.cos(lat1)*Math.sin(lon1)+B*Math.cos(lat2)*Math.sin(lon2);
+      const z = A*Math.sin(lat1)+B*Math.sin(lat2);
+      const lat = Math.atan2(z, Math.sqrt(x*x+y*y));
+      const lon = Math.atan2(y,x);
+      coords.push([lat*180/Math.PI, lon*180/Math.PI]);
     }
+    return coords;
+  }
 
-    const depPos = airports[dep];
-    const arrPos = airports[arr];
+  const routeCoords = generateGreatCircle(depPos, arrPos, 100);
+  flightLayer = L.polyline(routeCoords,{color:'cyan',weight:3,opacity:0.7}).addTo(map);
 
-    if(flightLayer) map.removeLayer(flightLayer);
+  map.fitBounds(flightLayer.getBounds(),{padding:[50,50]});
 
-    // Tạo đường bay Great Circle
-    const routeCoords = generateGreatCircle(depPos, arrPos, 200);
-    flightLayer = L.polyline(routeCoords, {color:'cyan', weight:3, opacity:0.7}).addTo(map);
-
-    // Markers
-    L.marker(depPos).addTo(map).bindPopup(`<b>Departure:</b> ${dep}`).openPopup();
-    L.marker(arrPos).addTo(map).bindPopup(`<b>Arrival:</b> ${arr}`);
-
-    // Fit map
-    map.fitBounds(flightLayer.getBounds(), {padding:[100,100]});
-
-    // Animate flight
-    const flightMarker = L.marker(depPos, {icon: L.icon({iconUrl:'https://cdn-icons-png.flaticon.com/512/63/63372.png', iconSize:[32,32]})}).addTo(map);
-    let idx = 0;
-    function moveMarker(){
-        if(idx < routeCoords.length){
-            flightMarker.setLatLng(routeCoords[idx]);
-            idx++;
-            setTimeout(moveMarker, 50);
-        }
+  // Flight marker animation
+  const flightMarker = L.marker(depPos).addTo(map);
+  let idx=0;
+  function moveMarker(){
+    if(idx<routeCoords.length){
+      flightMarker.setLatLng(routeCoords[idx]);
+      idx++; setTimeout(moveMarker,50);
     }
-    moveMarker();
+  }
+  moveMarker();
 
-    // Update ticket
-    const ticket = document.getElementById('ticket');
-    ticket.style.display = 'block';
-    ticket.innerHTML = `
-        <hr>
-        <b>Flight:</b> ${callsign}<br>
-        <b>Aircraft:</b> ${aircraft}<br>
-        <b>From:</b> ${dep}<br>
-        <b>To:</b> ${arr}<br>
-    `;
+  // Show ticket
+  const ticket = document.getElementById('ticket');
+  ticket.style.display='block';
+  ticket.innerHTML = `<b>Flight:</b> ${callsign}<br><b>Aircraft:</b> ${aircraft}<br><b>From:</b> ${dep}<br><b>To:</b> ${arr}`;
 });
 </script>
-});
-</script>
+
 </body>
 </html>
