@@ -3,62 +3,133 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AeroPulse - Flight Plan + Multiplayer</title>
+<title>AeroPulse - Glassy Symbol Edition</title>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 <style>
-:root {
-    --accent:#2ca1ff;
-    --bg-dark:#0e0f12;
-    --bg-sidebar:rgba(22,24,28,0.75);
-    --text-light:#ddd;
-    --text-dim:#aaa;
-}
+/* 🌌 Reset */
+* {margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',sans-serif;}
+body, html {width:100%;height:100%;background:#0d0f14;color:#fff;overflow:hidden;}
 
-/* Reset */
-body, html {margin:0;padding:0;font-family:'Segoe UI',sans-serif;background:var(--bg-dark);color:var(--text-light);}
-
-/* Sidebar */
+/* 🌟 Glassy sidebar */
 #sidebar {
-    width:270px;height:100vh;background:var(--bg-sidebar);
-    backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+    width:80px; height:100vh;
+    background: rgba(20,22,28,0.6);
+    backdrop-filter: blur(15px);
+    display:flex;flex-direction:column;align-items:center;padding:20px 0;
+    position:fixed;left:0;top:0;z-index:1000;
     border-right:1px solid rgba(255,255,255,0.1);
-    display:flex;flex-direction:column;
-    box-shadow:3px 0 20px rgba(0,0,0,0.6);
-    position:fixed;z-index:1000;transition:all 0.3s ease;
+    transition: all 0.3s ease;
 }
-#sidebar h1{font-size:22px;font-weight:600;color:var(--accent);text-align:center;margin:24px 0;}
-#sidebar button{padding:14px 24px;background: rgba(255,255,255,0.05);border:none;color:var(--text-light);text-align:left;font-size:15px;cursor:pointer;border-radius:8px;margin:4px 12px;transition:all 0.2s ease;}
-#sidebar button:hover{background: rgba(44,161,255,0.2); color: var(--accent); transform: translateX(4px);}
-#userInfo{margin-top:auto;padding:20px;font-size:14px;border-top:1px solid rgba(255,255,255,0.1);color:var(--text-dim);}
 
-/* Map */
-#map {position:absolute; left:270px; top:0; right:0; bottom:0; z-index:0;}
+#sidebar .logo {
+    font-size:24px;font-weight:700;color:#2ca1ff;margin-bottom:30px;text-align:center;
+    letter-spacing:2px;
+}
 
-/* Form */
-#formContainer {display:none;position:absolute;top:0;left:270px;width:calc(100%-270px);height:100vh;background:rgba(27,29,34,0.75);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);padding:40px;color:var(--text-light);overflow-y:auto;z-index:1000;border-left:1px solid rgba(255,255,255,0.1);}
-#flightForm { max-width:500px;margin:0 auto;}
-#flightForm h2{color:var(--accent);font-weight:600;margin-bottom:20px;text-align:center;}
-#flightForm label{display:block;margin-top:12px;font-size:14px;color:var(--text-dim);}
-#flightForm input{width:100%;padding:10px;border:1px solid rgba(255,255,255,0.2);border-radius:6px;background:rgba(18,20,23,0.5);color:var(--text-light);margin-top:4px;font-size:14px;transition:all 0.2s ease;}
-#flightForm input:hover,#flightForm input:focus{background:rgba(18,20,23,0.8);border-color:var(--accent);}
-#flightForm button{background:var(--accent);color:#fff;padding:12px;border:none;border-radius:6px;width:100%;margin-top:16px;font-size:15px;cursor:pointer;transition:background 0.2s,transform 0.2s;}
-#flightForm button:hover{background:#1082e0;transform:translateY(-2px);}
+/* Sidebar buttons - symbol only */
+#sidebar button {
+    width:50px;height:50px;margin:12px 0;
+    background: rgba(255,255,255,0.05);
+    border:none;border-radius:12px;
+    font-size:28px; /* symbol */
+    color:#bbb;
+    display:flex;justify-content:center;align-items:center;
+    cursor:pointer;
+    transition: all 0.25s ease, transform 0.3s ease;
+    position:relative;
+    overflow:hidden;
+}
+
+#sidebar button.active, #sidebar button:hover {
+    background: rgba(44,161,255,0.2);
+    color:#2ca1ff;
+    transform: scale(1.2);
+}
+
+/* 💧 Pop-up glassy animation */
+#formContainer {
+    display:none;
+    position:absolute;
+    top:0;left:80px;
+    width:calc(100% - 80px);
+    height:100vh;
+    background: rgba(18,20,28,0.6);
+    backdrop-filter: blur(18px);
+    padding:40px;
+    overflow-y:auto;
+    z-index:1000;
+}
+
+#formContainer.show {
+    animation: popWater 0.35s ease forwards;
+}
+
+@keyframes popWater {
+    0% {opacity:0; transform:scale(0.8);}
+    60% {opacity:1; transform:scale(1.05);}
+    100% {transform:scale(1);}
+}
+
+/* ✈️ Flight Form */
+#flightForm {
+    max-width:480px; margin:0 auto;
+    background: rgba(30,30,40,0.7);
+    padding:30px 40px; border-radius:20px;
+    box-shadow: 0 12px 30px rgba(0,0,0,0.5);
+    backdrop-filter: blur(18px);
+}
+
+#flightForm h2 {
+    text-align:center;color:#2ca1ff;font-weight:600;font-size:20px;margin-bottom:20px;
+}
+
+#flightForm label {
+    display:block;color:#ccc;margin-top:12px;font-size:14px;
+}
+
+#flightForm input {
+    width:100%;padding:10px 12px;border-radius:10px;border:1px solid rgba(255,255,255,0.2);
+    background: rgba(20,22,28,0.5);color:#fff;margin-top:6px;font-size:14px;
+    transition:0.25s ease;
+}
+
+#flightForm input:focus {border-color:#2ca1ff;box-shadow:0 0 10px rgba(44,161,255,0.3);outline:none;}
+
+#flightForm button {
+    width:100%;padding:12px;margin-top:20px;border:none;border-radius:12px;
+    background:#2ca1ff;color:#fff;font-size:15px;font-weight:600;cursor:pointer;
+    transition:0.25s ease, transform 0.2s;
+}
+
+#flightForm button:hover {background:#1b8de0;transform:translateY(-2px);}
+
+/* 🗺️ Map */
+#map {position:absolute;top:0;left:80px;right:0;bottom:0;z-index:0;}
+
+/* 🌀 Scrollbar glassy */
+#formContainer::-webkit-scrollbar {width:10px;}
+#formContainer::-webkit-scrollbar-thumb {background:rgba(100,100,100,0.4);border-radius:8px;}
+#formContainer::-webkit-scrollbar-thumb:hover {background:rgba(180,180,180,0.5);}
 </style>
 </head>
 <body>
+
+<!-- Sidebar -->
 <div id="sidebar">
-    <h1>AeroPulse</h1>
-    <button onclick="showSection('home')">Home</button>
-    <button onclick="showSection('newFlight')">New Flight</button>
-    <button onclick="showSection('traffic')">ADS-B Traffic</button>
-    <div id="userInfo">Not logged in</div>
+    <div class="logo">Aero</div>
+    <!-- Symbol-based navigation -->
+    <button id="homeBtn" title="Home">⌂</button>
+    <button id="newFlightBtn" title="New Flight">✈︎</button>
+    <button id="trafficBtn" title="Traffic">●</button>
 </div>
 
+<!-- Map -->
 <div id="map"></div>
 
+<!-- Glassy pop-up -->
 <div id="formContainer">
     <form id="flightForm">
-        <h2>Upload Flight Plan (.json)</h2>
+        <h2>Upload Flight Plan</h2>
         <label>Flight Plan JSON</label>
         <input type="file" id="flightFile" accept=".json" required>
         <button type="submit">Load Flight</button>
@@ -68,8 +139,10 @@ body, html {margin:0;padding:0;font-family:'Segoe UI',sans-serif;background:var(
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
 // ===== Map setup =====
-const map = L.map('map',{ minZoom:3, maxZoom:15, zoomControl:true }).setView([10,105],5);
-L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',{ attribution:'&copy; OpenStreetMap, CARTO', subdomains:'abcd', maxZoom:19 }).addTo(map);
+const map = L.map('map',{minZoom:3,maxZoom:15,zoomControl:true}).setView([10,105],5);
+L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',{
+    attribution:'&copy; OpenStreetMap, CARTO', subdomains:'abcd', maxZoom:19
+}).addTo(map);
 
 // ===== Flight plan =====
 let flightLayer = null;
@@ -86,61 +159,20 @@ document.getElementById('flightForm').addEventListener('submit', async e=>{
     map.fitBounds(flightLayer.getBounds(), {padding:[50,50], maxZoom:10});
 });
 
-// ===== Multiplayer hook =====
-const players = {}; // id -> {marker, polyline, lastPos}
-
-(function(){
-    const OriginalWS = window.WebSocket;
-    window.WebSocket = function(url,...args){
-        const ws = new OriginalWS(url,...args);
-
-        ws.addEventListener('message', e=>{
-            try{
-                const data = JSON.parse(e.data);
-                // Example multiplayer data
-                if(data.type==='players'){
-                    data.players.forEach(p=>{
-                        if(!players[p.id]){
-                            const marker = L.circleMarker([p.lat,p.lng],{radius:6,color:'#ff4081'}).addTo(map);
-                            const polyline = L.polyline([[p.lat,p.lng]],{color:'#ff4081',weight:2,opacity:0.8}).addTo(map);
-                            marker.bindTooltip(`${p.flightNumber||'Unknown'} | ${p.aircraft||'N/A'} | ${Math.round(p.speed||0)}kt | ${Math.round(p.alt||0)}ft`);
-                            players[p.id] = {marker, polyline, lastPos:[p.lat,p.lng]};
-                        }else{
-                            const pl = players[p.id];
-                            pl.lastPos = [p.lat,p.lng];
-                            pl.marker.setLatLng([p.lat,p.lng]);
-                            pl.polyline.addLatLng([p.lat,p.lng]);
-                            pl.marker.setTooltipContent(`${p.flightNumber||'Unknown'} | ${p.aircraft||'N/A'} | ${Math.round(p.speed||0)}kt | ${Math.round(p.alt||0)}ft`);
-                        }
-                    });
-                }
-            }catch(err){}
-        });
-
-        return ws;
-    };
-})();
-
-// ===== Sidebar =====
-function showSection(section){document.getElementById('formContainer').style.display = section==='newFlight'?'block':'none';}
-
-// ===== Zoom bounds fix =====
-function updateBounds(){
-    const zoom = map.getZoom();
-    if(zoom<=map.getMinZoom()){
-        const padding = 5;
-        const center = map.getCenter();
-        const bounds = L.latLngBounds(
-            [center.lat-padding,center.lng-padding],
-            [center.lat+padding,center.lng+padding]
-        );
-        map.setMaxBounds(bounds);
-    }else{
-        map.setMaxBounds(null);
-    }
-}
-map.on('zoomend', updateBounds);
-map.on('moveend', updateBounds);
+// ===== Sidebar buttons =====
+const formContainer = document.getElementById('formContainer');
+document.getElementById('newFlightBtn').addEventListener('click', ()=>{
+    formContainer.classList.add('show');
+    formContainer.style.display = 'block';
+});
+document.getElementById('homeBtn').addEventListener('click', ()=>{
+    formContainer.style.display = 'none';
+    formContainer.classList.remove('show');
+});
+document.getElementById('trafficBtn').addEventListener('click', ()=>{
+    formContainer.style.display = 'none';
+    formContainer.classList.remove('show');
+});
 </script>
 </body>
 </html>
