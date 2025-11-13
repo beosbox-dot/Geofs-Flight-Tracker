@@ -410,7 +410,17 @@ const airports = { "ATL": [33.6407, -84.4277],
   "KTM": [27.6974, 85.3567],
   "DAC": [23.8433, 90.3978] 
                  };
-// ✈️ Flight form submit (revised)
+
+// ===== Map =====
+const map = L.map('map',{minZoom:3,maxZoom:15,zoomControl:true}).setView([20,0],2);
+L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',{
+  attribution:'&copy; OpenStreetMap, CARTO', subdomains:'abcd', maxZoom:19
+}).addTo(map);
+
+// flightLayer toàn cục
+let flightLayer = null;
+
+// ✈️ Flight form submit
 document.getElementById('flightForm').addEventListener('submit', e => {
   e.preventDefault();
   const dep = document.getElementById('departure').value.toUpperCase();
@@ -427,7 +437,7 @@ document.getElementById('flightForm').addEventListener('submit', e => {
 
   if (flightLayer) map.removeLayer(flightLayer);
 
-  // ✈️ Great circle function (smooth curve)
+  // Great circle
   function generateGreatCircle(start, end, steps = 200) {
     const coords = [];
     const [lat1, lon1] = start.map(d => d * Math.PI / 180);
@@ -450,36 +460,21 @@ document.getElementById('flightForm').addEventListener('submit', e => {
 
   const routeCoords = generateGreatCircle(depPos, arrPos, 200);
 
-  // 🌐 Smooth dashed route line
   flightLayer = L.polyline(routeCoords, {
     color: '#00ffff',
     weight: 2.2,
     opacity: 0.8,
-    dashArray: '4, 8', // nhỏ và nhẹ hơn
+    dashArray: '4,8',
     smoothFactor: 2
   }).addTo(map);
 
-  // 🔵 Departure and Arrival icons
-  const depIcon = L.divIcon({
-    html: '<i class="fa-solid fa-plane-departure" style="color:#33ccff;font-size:20px;"></i>',
-    className: 'airport-icon',
-    iconSize: [24, 24],
-    popupAnchor: [0, -10]
-  });
-
-  const arrIcon = L.divIcon({
-    html: '<i class="fa-solid fa-plane-arrival" style="color:#ff6666;font-size:20px;"></i>',
-    className: 'airport-icon',
-    iconSize: [24, 24],
-    popupAnchor: [0, -10]
-  });
-
-  const depMarker = L.marker(depPos, { icon: depIcon }).addTo(map).bindPopup(`<b>${dep}</b>`);
-  const arrMarker = L.marker(arrPos, { icon: arrIcon }).addTo(map).bindPopup(`<b>${arr}</b>`);
+  // Markers
+  const depMarker = L.marker(depPos).addTo(map).bindPopup(`<b>${dep}</b>`);
+  const arrMarker = L.marker(arrPos).addTo(map).bindPopup(`<b>${arr}</b>`);
 
   map.fitBounds(flightLayer.getBounds(), { padding: [60, 60] });
 
-  // 🛫 Flight marker with motion
+  // Plane icon animation
   const planeIcon = L.divIcon({
     html: '<i class="fa-solid fa-plane" style="color:cyan;transform:rotate(45deg);font-size:18px;"></i>',
     className: '',
@@ -488,17 +483,16 @@ document.getElementById('flightForm').addEventListener('submit', e => {
 
   const flightMarker = L.marker(depPos, { icon: planeIcon }).addTo(map);
   let idx = 0;
-
   function moveMarker() {
     if (idx < routeCoords.length) {
       flightMarker.setLatLng(routeCoords[idx]);
       idx++;
-      requestAnimationFrame(moveMarker); // mượt hơn setTimeout
+      requestAnimationFrame(moveMarker);
     }
   }
   moveMarker();
 
-  // 🧾 Show ticket info
+  // Ticket
   const ticket = document.getElementById('ticket');
   ticket.style.display = 'block';
   ticket.innerHTML = `
@@ -507,15 +501,18 @@ document.getElementById('flightForm').addEventListener('submit', e => {
     <b>From:</b> ${dep}<br>
     <b>To:</b> ${arr}`;
 });
-  document.getElementById('newFlightBtn').addEventListener('click', () => {
-  document.getElementById('formContainer').classList.add('show');
-  document.getElementById('formContainer').classList.remove('hide');
+
+// ✨ Sidebar buttons
+const formContainer = document.getElementById('formContainer');
+document.getElementById('newFlightBtn').addEventListener('click', () => {
+  formContainer.style.display = 'block';
+  formContainer.classList.remove('hide');
+  formContainer.classList.add('show');
 });
 document.getElementById('homeBtn').addEventListener('click', () => {
-  document.getElementById('formContainer').classList.add('hide');
-  setTimeout(() => {
-    document.getElementById('formContainer').classList.remove('show');
-  }, 350); // Thời gian khớp với animation
+  formContainer.classList.remove('show');
+  formContainer.classList.add('hide');
+  setTimeout(() => formContainer.style.display = 'none', 350);
 });
 </script>
 
