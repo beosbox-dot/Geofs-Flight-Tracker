@@ -507,6 +507,16 @@ document.getElementById('flightForm').addEventListener('submit', e => {
     <b>From:</b> ${dep}<br>
     <b>To:</b> ${arr}`;
 });
+  document.getElementById('newFlightBtn').addEventListener('click', () => {
+  document.getElementById('formContainer').classList.add('show');
+  document.getElementById('formContainer').classList.remove('hide');
+});
+document.getElementById('homeBtn').addEventListener('click', () => {
+  document.getElementById('formContainer').classList.add('hide');
+  setTimeout(() => {
+    document.getElementById('formContainer').classList.remove('show');
+  }, 350); // Thời gian khớp với animation
+});
 </script>
 
 </body>
