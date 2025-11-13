@@ -426,7 +426,6 @@ const airports = {
 };
 
 let flightLayer=null;
-
 document.getElementById('flightForm').addEventListener('submit', e=>{
   e.preventDefault();
   const dep=document.getElementById('departure').value.toUpperCase();
@@ -434,10 +433,8 @@ document.getElementById('flightForm').addEventListener('submit', e=>{
   const callsign=document.getElementById('callsign').value.toUpperCase();
   const aircraft=document.getElementById('aircraft').selectedOptions[0].text;
   if(!airports[dep]||!airports[arr]) return alert("Airport not found!");
-
   const depPos=airports[dep], arrPos=airports[arr];
   if(flightLayer) map.removeLayer(flightLayer);
-
   function greatCircle(start,end,steps=200){
     const coords=[];
     const [lat1,lon1]=start.map(d=>d*Math.PI/180);
@@ -456,33 +453,8 @@ document.getElementById('flightForm').addEventListener('submit', e=>{
     }
     return coords;
   }
-
   const route=greatCircle(depPos,arrPos);
-  flightLayer=L.polyline(route,{color:'#00ffff',weight:2.2,opacity:0.8,dashArray:'4,8'}).addTo(map);
-  L.marker(depPos).addTo(map).bindPopup(dep);
-  L.marker(arrPos).addTo(map).bindPopup(arr);
-  map.fitBounds(flightLayer.getBounds(),{padding:[60,60]});
-
-  const planeIcon=L.divIcon({html:'<i class="fa-solid fa-plane" style="color:#00ffff;font-size:18px;transform:rotate(45deg)"></i>',className:'',iconSize:[18,18]});
-  const flightMarker=L.marker(depPos,{icon:planeIcon}).addTo(map);
-  let idx=0;
-  function moveMarker(){
-    if(idx<route.length){flightMarker.setLatLng(route[idx]);idx++;requestAnimationFrame(moveMarker);}
-  }
-  moveMarker();
-
-  const ticket=document.getElementById('ticket');
-  ticket.style.display='block';
-  ticket.innerHTML=`<b>Flight:</b> ${callsign}<br><b>Aircraft:</b> ${aircraft}<br><b>From:</b> ${dep}<br><b>To:</b> ${arr}`;
-});
-
-document.getElementById('newFlightBtn').addEventListener('click',()=>{
-  document.getElementById('formContainer').classList.add('show');
-  document.getElementById('formContainer').classList.remove('hide');
-});
-document.getElementById('homeBtn').addEventListener('click',()=>{
-  document.getElementById('formContainer').classList.add('hide');
-  setTimeout(()=>{document.getElementById('formContainer').classList.remove('show');},350);
+  flightLayer=L.polyline(route,{color:'#8a2be2',weight:2.2,opacity:0.8,dashArray:'4,8'}).addTo(map);
 });
 </script>
 
