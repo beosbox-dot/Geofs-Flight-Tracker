@@ -54,13 +54,83 @@ body,html{width:100%;height:100%;background:linear-gradient(135deg,#0b0c10,#1a1a
   <input type="text" id="arrival" placeholder="e.g. LAX" required>
   <label>Callsign</label>
   <input type="text" id="callsign" placeholder="Flight number" required>
-  <label>Select Aircraft</label>
-  <select id="aircraft">
-    <option value="A320">Airbus A320</option>
-    <option value="B737">Boeing 737</option>
-    <option value="B777">Boeing 777</option>
-    <option value="A380">Airbus A380</option>
-  </select>
+<label for="aircraft">Select Aircraft</label>
+<select id="aircraft">
+  <!-- ✈️ AIRBUS -->
+  <option value="A220-100">Airbus A220-100</option>
+  <option value="A220-300">Airbus A220-300</option>
+  <option value="A318">Airbus A318</option>
+  <option value="A319">Airbus A319</option>
+  <option value="A320">Airbus A320</option>
+  <option value="A320neo">Airbus A320neo</option>
+  <option value="A321">Airbus A321</option>
+  <option value="A321neo">Airbus A321neo</option>
+  <option value="A330-200">Airbus A330-200</option>
+  <option value="A330-300">Airbus A330-300</option>
+  <option value="A330neo">Airbus A330neo</option>
+  <option value="A340-300">Airbus A340-300</option>
+  <option value="A340-600">Airbus A340-600</option>
+  <option value="A350-900">Airbus A350-900</option>
+  <option value="A350-1000">Airbus A350-1000</option>
+  <option value="A380-800">Airbus A380-800</option>
+
+  <!-- ✈️ BOEING -->
+  <option value="B707">Boeing 707</option>
+  <option value="B717">Boeing 717</option>
+  <option value="B727">Boeing 727</option>
+  <option value="B737-700">Boeing 737-700</option>
+  <option value="B737-800">Boeing 737-800</option>
+  <option value="B737-MAX8">Boeing 737 MAX 8</option>
+  <option value="B747-400">Boeing 747-400</option>
+  <option value="B747-8">Boeing 747-8</option>
+  <option value="B757-200">Boeing 757-200</option>
+  <option value="B757-300">Boeing 757-300</option>
+  <option value="B767-300ER">Boeing 767-300ER</option>
+  <option value="B777-200LR">Boeing 777-200LR</option>
+  <option value="B777-300ER">Boeing 777-300ER</option>
+  <option value="B777X">Boeing 777X</option>
+  <option value="B787-8">Boeing 787-8 Dreamliner</option>
+  <option value="B787-9">Boeing 787-9 Dreamliner</option>
+  <option value="B787-10">Boeing 787-10 Dreamliner</option>
+
+  <!-- ✈️ EMBRAER -->
+  <option value="E170">Embraer E170</option>
+  <option value="E175">Embraer E175</option>
+  <option value="E190">Embraer E190</option>
+  <option value="E195-E2">Embraer E195-E2</option>
+
+  <!-- ✈️ BOMBARDIER -->
+  <option value="CRJ200">Bombardier CRJ200</option>
+  <option value="CRJ700">Bombardier CRJ700</option>
+  <option value="CRJ900">Bombardier CRJ900</option>
+  <option value="CRJ1000">Bombardier CRJ1000</option>
+  <option value="Global7500">Bombardier Global 7500</option>
+
+  <!-- ✈️ ATR -->
+  <option value="ATR42-600">ATR 42-600</option>
+  <option value="ATR72-600">ATR 72-600</option>
+
+  <!-- ✈️ CESSNA -->
+  <option value="C172">Cessna 172 Skyhawk</option>
+  <option value="C208">Cessna 208 Caravan</option>
+  <option value="C525">Cessna CitationJet CJ2+</option>
+  <option value="C750">Cessna Citation X</option>
+
+  <!-- ✈️ GULFSTREAM -->
+  <option value="G500">Gulfstream G500</option>
+  <option value="G650ER">Gulfstream G650ER</option>
+  <option value="G700">Gulfstream G700</option>
+
+  <!-- ✈️ DASSAULT -->
+  <option value="Falcon7X">Dassault Falcon 7X</option>
+  <option value="Falcon8X">Dassault Falcon 8X</option>
+  <option value="Falcon10X">Dassault Falcon 10X</option>
+
+  <!-- ✈️ SUKHOI & COMAC -->
+  <option value="SSJ100">Sukhoi Superjet 100</option>
+  <option value="C919">COMAC C919</option>
+  <option value="ARJ21">COMAC ARJ21</option>
+</select>
   <button type="submit">Load Flight</button>
   <div id="ticket"></div>
 </form>
@@ -69,7 +139,7 @@ body,html{width:100%;height:100%;background:linear-gradient(135deg,#0b0c10,#1a1a
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
 const map = L.map('map',{minZoom:3,maxZoom:15,zoomControl:true}).setView([20,0],2);
-L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',{
+L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png',{
   attribution:'&copy; OpenStreetMap, CARTO', subdomains:'abcd', maxZoom:19
 }).addTo(map);
 
@@ -418,3 +488,4 @@ document.getElementById('homeBtn').addEventListener('click',()=>{
 
 </body>
 </html>
+
